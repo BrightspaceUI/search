@@ -56,7 +56,8 @@ Include the [webcomponents.js](http://webcomponents.org/polyfills/) "lite" polyf
 ```
 -->
 ```html
-<d2l-search-input value="Apples" placeholder="Search for fruit">
+<d2l-search-input label="Search" value="Apples" 
+   placeholder="Search for fruit">
 </d2l-search-input>
 ```
 
