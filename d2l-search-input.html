@@ -35,6 +35,17 @@ Polymer-based web components for search
 				white-space: nowrap;
 			}
 
+			:host-context([dir="rtl"]) input {
+				padding-right: 0.75rem;
+				padding-left: 2.4rem;
+			}
+
+			/* Duplicated because some browsers ignore CSS block for any invalid selector */
+			:host(:dir(rtl)) input {
+				padding-right: 0.75rem;
+				padding-left: 2.4rem;
+			}
+
 			input::placeholder {
 				@apply --d2l-input-placeholder;
 			}
@@ -55,6 +66,22 @@ Polymer-based web components for search
 				padding-right: calc(2.4rem - 1px);
 			}
 
+			:host-context([dir="rtl"]) input:hover,
+			:host-context([dir="rtl"]) input:focus,
+			:host-context([dir="rtl"]) .d2l-search-input-hover input,
+			:host-context([dir="rtl"]) .d2l-search-input-focus input {
+				padding-right: calc(0.75rem - 1px);
+				padding-left: calc(2.4rem - 1px);
+			}
+
+			:host(:dir(rtl)) input:hover,
+			:host(:dir(rtl)) input:focus,
+			:host(:dir(rtl)) .d2l-search-input-hover input,
+			:host(:dir(rtl)) .d2l-search-input-focus input {
+				padding-right: calc(0.75rem - 1px);
+				padding-left: calc(2.4rem - 1px);
+			}
+
 			d2l-button-icon {
 				--d2l-button-icon-min-height: 1.7rem;
 				--d2l-button-icon-min-width: 1.7rem;
@@ -64,6 +91,16 @@ Polymer-based web components for search
 				width: 1.7rem;
 				top: 0.2rem;
 				right: 0.2rem;
+			}
+
+			:host-context([dir="rtl"]) d2l-button-icon {
+				left: 0.2rem;
+				right: auto;
+			}
+
+			:host(:dir(rtl)) d2l-button-icon {
+				left: 0.2rem;
+				right: auto;
 			}
 
 			d2l-button-icon[hidden] {
