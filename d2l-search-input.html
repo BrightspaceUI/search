@@ -196,7 +196,11 @@ Polymer-based web components for search
 					var input = Polymer.dom(this.root).querySelector('input');
 					input.value = '';
 					this.value = '';
-					input.focus();
+					fastdom.measure(function() {
+						fastdom.mutate(function() {
+							input.focus();
+						});
+					});
 					this._dispatchClearEvent();
 				}.bind(this));
 			},
