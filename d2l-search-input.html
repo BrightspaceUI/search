@@ -117,14 +117,14 @@ Polymer-based web components for search
 				placeholder$="[[placeholder]]"
 				type="text" />
 			<d2l-button-icon
-				id="search"
+				class="d2l-search-input-search"
 				disabled$="[[disabled]]"
 				hidden=[[value]]
 				icon="d2l-tier1:search"
 				on-click="_handleSearchClick"
 				text="[[localize('search')]]"></d2l-button-icon>
 			<d2l-button-icon
-				id="clear"
+				class="d2l-search-input-clear"
 				disabled$="[[disabled]]"
 				hidden=[[!value]]
 				icon="d2l-tier1:close-default"
@@ -281,7 +281,7 @@ Polymer-based web components for search
 					var input = Polymer.dom(this.root).querySelector('input');
 					this.value = input.value;
 					if (this.value.length > 0) {
-						Polymer.dom(this.root).querySelector('#clear').focus();
+						Polymer.dom(this.root).querySelector('.d2l-search-input-clear').focus();
 						this._dispatchSearchEvent(this.value);
 					} else {
 						this._dispatchClearEvent();
@@ -291,8 +291,8 @@ Polymer-based web components for search
 
 			_isFocusableChild: function(elem) {
 				return (elem === Polymer.dom(this.root).querySelector('input')
-					|| elem === Polymer.dom(this.root).querySelector('#search')
-					|| elem === Polymer.dom(this.root).querySelector('#clear'));
+					|| elem === Polymer.dom(this.root).querySelector('.d2l-search-input-search')
+					|| elem === Polymer.dom(this.root).querySelector('.d2l-search-input-clear'));
 			}
 
 		});
