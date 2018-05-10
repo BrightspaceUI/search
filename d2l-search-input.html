@@ -115,7 +115,7 @@ Polymer-based web components for search
 				disabled$="[[disabled]]"
 				on-keypress="_handleInputKeyPress"
 				placeholder$="[[placeholder]]"
-				type="text" />
+				type="text" value="[[value]]" />
 			<d2l-button-icon
 				class="d2l-search-input-search"
 				disabled$="[[disabled]]"
@@ -185,7 +185,6 @@ Polymer-based web components for search
 			},
 
 			attached: function() {
-				Polymer.dom(this.root).querySelector('input').value = this.value;
 				Polymer.RenderStatus.afterNextRender(this, function() {
 					var elem = this._getContainer();
 					elem.addEventListener('focus', this._handleFocus, true);
@@ -201,6 +200,18 @@ Polymer-based web components for search
 				elem.removeEventListener('blur', this._handleBlur, true);
 				elem.removeEventListener('mouseenter', this._handleMouseEnter, true);
 				elem.removeEventListener('mouseleave', this._handleMouseLeave, true);
+			},
+
+			search: function() {
+				this._dispatchEvent();
+			},
+
+			_dispatchEvent: function() {
+				if (this.value.length > 0) {
+					this._dispatchSearchEvent(this.value);
+				} else {
+					this._dispatchClearEvent();
+				}
 			},
 
 			_dispatchSearchEvent: function(value) {
@@ -231,7 +242,6 @@ Polymer-based web components for search
 			_handleClearClick: function() {
 				fastdom.mutate(function() {
 					var input = Polymer.dom(this.root).querySelector('input');
-					input.value = '';
 					this.value = '';
 					fastdom.measure(function() {
 						fastdom.mutate(function() {
@@ -255,11 +265,7 @@ Polymer-based web components for search
 				var value = e.target.value;
 				fastdom.mutate(function() {
 					this.value = value;
-					if (value.length > 0) {
-						this._dispatchSearchEvent(value);
-					} else {
-						this._dispatchClearEvent();
-					}
+					this._dispatchEvent();
 				}.bind(this));
 			},
 
@@ -282,10 +288,8 @@ Polymer-based web components for search
 					this.value = input.value;
 					if (this.value.length > 0) {
 						Polymer.dom(this.root).querySelector('.d2l-search-input-clear').focus();
-						this._dispatchSearchEvent(this.value);
-					} else {
-						this._dispatchClearEvent();
 					}
+					this._dispatchEvent();
 				}.bind(this));
 			},
 
