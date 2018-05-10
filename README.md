@@ -66,10 +66,10 @@ The `d2l-search-input` dispatches events for search and clearing the search.
 
 ```javascript
 // triggered when searching
-view.addEventListener('d2l-search-input-search', () => { ... });
+search.addEventListener('d2l-search-input-search', () => { ... });
 
 // triggered when search field is cleared
-view.addEventListener('d2l-search-input-clear', () => { ... });
+search.addEventListener('d2l-search-input-clear', () => { ... });
 ```
 
 ## Developing, Testing and Contributing
