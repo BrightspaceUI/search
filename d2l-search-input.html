@@ -202,10 +202,6 @@ Polymer-based web components for search
 				elem.removeEventListener('mouseleave', this._handleMouseLeave, true);
 			},
 
-			search: function() {
-				this._dispatchEvent();
-			},
-
 			_dispatchEvent: function() {
 				if (this.value.length > 0) {
 					this._dispatchSearchEvent(this.value);
