@@ -29,7 +29,7 @@
 			<demo-snippet>
 				<template>
 					<d2l-search-input
-						label="Search" 
+						label="Search"
 						value="apples"
 						placeholder="Search for some stuff">
 					</d2l-search-input>
@@ -38,16 +38,16 @@
 
 		</div>
 		<script>
-
-			window.addEventListener('WebComponentsReady', function(e) {
+			window.addEventListener('WebComponentsReady', function() {
 				document.body.addEventListener('d2l-search-input-search', function(e) {
+					// eslint-disable-next-line no-console
 					console.log(e);
 				});
 				document.body.addEventListener('d2l-search-input-clear', function(e) {
+					// eslint-disable-next-line no-console
 					console.log(e);
 				});
 			});
-
 		</script>
 	</body>
 </html>
