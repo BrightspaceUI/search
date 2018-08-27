@@ -114,6 +114,7 @@ Polymer-based web components for search
 				aria-label$="[[label]]"
 				class="d2l-focusable"
 				disabled$="[[disabled]]"
+				maxlength$="[[maxlength]]"
 				on-keypress="_handleInputKeyPress"
 				placeholder$="[[placeholder]]"
 				type="text" value="[[value]]" />
@@ -157,6 +158,12 @@ Polymer-based web components for search
 				 */
 				label: {
 					type: String
+				},
+				/**
+				 * Maximum number of characters that the user can enter.
+				 */
+				maxlength: {
+					type: Number
 				},
 				/**
 				 * A hint to the user of what can be entered in the input.
