@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+		<title>d2l-search-input test</title>
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script src="../../web-component-tester/browser.js"></script>
+		<link rel="import" href="../d2l-search-input.html">
+	</head>
+	<body>
+		<test-fixture id="basic">
+			<template>
+				<d2l-search-input></d2l-search-input>
+			</template>
+		</test-fixture>
+		<test-fixture id="value-set">
+			<template>
+				<d2l-search-input value="foo"></d2l-search-input>
+			</template>
+		</test-fixture>
+		<script>
+			describe('<d2l-search-input>', function() {
+
+				it('should properly instantiate the element', function() {
+					var element = fixture('basic');
+					assert.equal(element.is, 'd2l-search-input');
+				});
+
+			});
+		</script>
+	</body>
+</html>
