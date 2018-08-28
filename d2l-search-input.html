@@ -146,6 +146,12 @@ Polymer-based web components for search
 				D2L.PolymerBehaviors.Search.LocalizeBehavior
 			],
 
+			/**
+			 * Fired when a search or clear is performed.
+			 * @event d2l-search-input-search
+			 * @param {String} value Value of the search input.
+			 */
+
 			properties: {
 				/**
 				 * Whether the input is disabled.
@@ -236,24 +242,9 @@ Polymer-based web components for search
 			},
 
 			_dispatchEvent: function() {
-				if (this.value.length > 0) {
-					this._dispatchSearchEvent(this.value);
-				} else {
-					this._dispatchClearEvent();
-				}
-			},
-
-			_dispatchSearchEvent: function(value) {
 				this.dispatchEvent(new CustomEvent(
 					'd2l-search-input-search',
-					{bubbles: true, composed: false, detail: {value: value}}
-				));
-			},
-
-			_dispatchClearEvent: function() {
-				this.dispatchEvent(new CustomEvent(
-					'd2l-search-input-clear',
-					{bubbles: true, composed: false, detail: {value: ''}}
+					{bubbles: true, composed: false, detail: {value: this.value}}
 				));
 			},
 
@@ -270,8 +261,10 @@ Polymer-based web components for search
 
 			_handleClearClick: function() {
 				this.value = '';
-				this._setLastSearchValue('');
-				this._dispatchClearEvent();
+				if (this.value !== this.lastSearchValue) {
+					this._setLastSearchValue('');
+					this._dispatchEvent();
+				}
 				fastdom.mutate(function() {
 					var input = Polymer.dom(this.root).querySelector('input');
 					input.focus();
@@ -288,12 +281,10 @@ Polymer-based web components for search
 				if (e.keyCode !== this._keyCodes.ENTER) {
 					return;
 				}
-				var value = e.target.value;
-				fastdom.mutate(function() {
-					this.value = value;
-					this._setLastSearchValue(value);
+				if (this.value !== this.lastSearchValue) {
+					this._setLastSearchValue(this.value);
 					this._dispatchEvent();
-				}.bind(this));
+				}
 			},
 
 			_handleInput: function(e) {
@@ -314,10 +305,10 @@ Polymer-based web components for search
 			},
 
 			_handleSearchClick: function() {
-				var input = Polymer.dom(this.root).querySelector('input');
-				this.value = input.value;
-				this._setLastSearchValue(input.value);
-				this._dispatchEvent();
+				if (this.value !== this.lastSearchValue) {
+					this._setLastSearchValue(this.value);
+					this._dispatchEvent();
+				}
 				fastdom.mutate(function() {
 					if (this.value.length > 0) {
 						Polymer.dom(this.root).querySelector('.d2l-search-input-clear').focus();
