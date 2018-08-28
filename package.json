@@ -7,7 +7,9 @@
     "lint:html": "eslint *.html demo/*.html",
     "lint:wc": "polymer lint -i *.html",
     "lint": "npm run lint:html && npm run lint:wc",
-    "test": "npm run lint"
+    "test": "npm run lint && npm run test:polymer:local",
+    "test:polymer:local": "polymer test --skip-plugin sauce",
+    "test:polymer:sauce": "polymer test --skip-plugin local"
   },
   "repository": {
     "type": "git",
