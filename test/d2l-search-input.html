@@ -6,6 +6,7 @@
 		<title>d2l-search-input test</title>
 		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 		<script src="../../web-component-tester/browser.js"></script>
+		<link rel="import" href="../../iron-test-helpers/mock-interactions.html">
 		<link rel="import" href="../d2l-search-input.html">
 	</head>
 	<body>
@@ -23,11 +24,159 @@
 			describe('<d2l-search-input>', function() {
 
 				it('should properly instantiate the element', function() {
-					var element = fixture('basic');
-					assert.equal(element.is, 'd2l-search-input');
+					var elem = fixture('basic');
+					expect(elem.is).to.equal('d2l-search-input');
+				});
+
+				describe('value and lastSearchValue', function() {
+
+					it('should default both to empty string', function() {
+						var elem = fixture('basic');
+						expect(elem.value).to.equal('');
+						expect(elem.lastSearchValue).to.equal('');
+					});
+
+					it('should initially match lastSearchValue with value', function() {
+						var elem = fixture('value-set');
+						expect(elem.value).to.equal('foo');
+						expect(elem.lastSearchValue).to.equal('foo');
+					});
+
+					it('should not persist value to lastSearchValue', function() {
+						var elem = fixture('basic');
+						elem.value = 'bar';
+						expect(elem.lastSearchValue).to.equal('');
+					});
+
+					it('should persist value to lastSearchValue when search is performed', function() {
+						var elem = fixture('basic');
+						elem.value = 'bar';
+						clickSearchButton(elem);
+						expect(elem.value).to.equal('bar');
+						expect(elem.lastSearchValue).to.equal('bar');
+					});
+
+					it('should clear both when cleared', function() {
+						var elem = fixture('value-set');
+						clickClearButton(elem);
+						expect(elem.value).to.equal('');
+						expect(elem.lastSearchValue).to.equal('');
+					});
+
+				});
+
+				describe('search & clear button visibility', function() {
+
+					it('should show search if no value is set', function() {
+						var elem = fixture('basic');
+						assertSearchVisibility(elem, true);
+					});
+
+					[undefined, null, ''].forEach(function(val) {
+						it(`should show search if "${val}" value is set`, function() {
+							var elem = fixture('basic');
+							elem.value = val;
+							assertSearchVisibility(elem, true);
+						});
+					});
+
+					it('should show clear if a value is set', function() {
+						var elem = fixture('value-set');
+						assertSearchVisibility(elem, false);
+					});
+
+					it('should show search if value is modified', function() {
+						var elem = fixture('value-set');
+						elem.value = 'foobar';
+						assertSearchVisibility(elem, true);
+					});
+
+					it('should show search if value is cleared', function() {
+						var elem = fixture('value-set');
+						clickClearButton(elem);
+						assertSearchVisibility(elem, true);
+					});
+
+					it('should show search if empty search is performed', function() {
+						var elem = fixture('basic');
+						clickSearchButton(elem);
+						assertSearchVisibility(elem, true);
+					});
+
+					it('should show clear if modified value is searched', function() {
+						var elem = fixture('value-set');
+						elem.value = 'foobar';
+						clickSearchButton(elem);
+						assertSearchVisibility(elem, false);
+					});
+
+				});
+
+				describe('events', function() {
+
+					it('should fire "search" event when search is performed', function(done) {
+						var elem = fixture('basic');
+						elem.addEventListener('d2l-search-input-search', function() {
+							done();
+						});
+						elem.addEventListener('d2l-search-input-clear', function() {
+							throw 'Unexpected clear event';
+						});
+						elem.value = 'bar';
+						clickSearchButton(elem);
+					});
+
+					it('should fire "clear" event when cleared', function(done) {
+						var elem = fixture('value-set');
+						elem.addEventListener('d2l-search-input-search', function() {
+							throw 'Unexpected search event';
+						});
+						elem.addEventListener('d2l-search-input-clear', function() {
+							done();
+						});
+						clickClearButton(elem);
+					});
+
+					it('should fire "clear" event empty value search', function(done) {
+						var elem = fixture('basic');
+						elem.addEventListener('d2l-search-input-search', function() {
+							throw 'Unexpected search event';
+						});
+						elem.addEventListener('d2l-search-input-clear', function() {
+							done();
+						});
+						clickSearchButton(elem);
+					});
+
 				});
 
 			});
+
+			function assertSearchVisibility(elem, isVisible) {
+				if (isVisible) {
+					expect(getClearButton(elem).hasAttribute('hidden')).to.be.true;
+					expect(getSearchButton(elem).hasAttribute('hidden')).to.be.false;
+				} else {
+					expect(getClearButton(elem).hasAttribute('hidden')).to.be.false;
+					expect(getSearchButton(elem).hasAttribute('hidden')).to.be.true;
+				}
+			}
+
+			function clickClearButton(elem) {
+				MockInteractions.tap(getClearButton(elem));
+			}
+
+			function clickSearchButton(elem) {
+				MockInteractions.tap(getSearchButton(elem));
+			}
+
+			function getSearchButton(elem) {
+				return Polymer.dom(elem.root).querySelector('.d2l-search-input-search');
+			}
+
+			function getClearButton(elem) {
+				return Polymer.dom(elem.root).querySelector('.d2l-search-input-clear');
+			}
 		</script>
 	</body>
 </html>

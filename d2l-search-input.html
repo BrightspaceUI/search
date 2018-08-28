@@ -116,19 +116,21 @@ Polymer-based web components for search
 				disabled$="[[disabled]]"
 				maxlength$="[[maxlength]]"
 				on-keypress="_handleInputKeyPress"
+				on-input="_handleInput"
 				placeholder$="[[placeholder]]"
-				type="text" value="[[value]]" />
+				type="text"
+				value="[[value]]" />
 			<d2l-button-icon
 				class="d2l-search-input-search"
 				disabled$="[[disabled]]"
-				hidden=[[value]]
+				hidden=[[!_showSearch]]
 				icon="d2l-tier1:search"
 				on-click="_handleSearchClick"
 				text="[[localize('search')]]"></d2l-button-icon>
 			<d2l-button-icon
 				class="d2l-search-input-clear"
 				disabled$="[[disabled]]"
-				hidden=[[!value]]
+				hidden=[[_showSearch]]
 				icon="d2l-tier1:close-default"
 				on-click="_handleClearClick"
 				text="[[localize('search.clear')]]"></d2l-button-icon>
@@ -177,7 +179,19 @@ Polymer-based web components for search
 				value: {
 					type: String,
 					notify: true,
-					reflectToAttribute: true
+					value: ''
+				},
+				/**
+				 * Value of the input the last time a search was performed.
+				 */
+				lastSearchValue: {
+					type: String,
+					readOnly: true,
+					value: ''
+				},
+				_showSearch: {
+					type: Boolean,
+					computed: '_computeShowSearch(lastSearchValue, value)'
 				}
 			},
 
@@ -186,6 +200,9 @@ Polymer-based web components for search
 			},
 
 			ready: function() {
+				if (this.value !== undefined && this.value !== null) {
+					this._setLastSearchValue(this.value);
+				}
 				this._handleFocus = this._handleFocus.bind(this);
 				this._handleBlur = this._handleBlur.bind(this);
 				this._handleMouseEnter = this._handleMouseEnter.bind(this);
@@ -208,6 +225,14 @@ Polymer-based web components for search
 				elem.removeEventListener('blur', this._handleBlur, true);
 				elem.removeEventListener('mouseenter', this._handleMouseEnter, true);
 				elem.removeEventListener('mouseleave', this._handleMouseLeave, true);
+			},
+
+			_computeShowSearch: function(lastSearchValue, value) {
+				var valueIsEmpty = (value === undefined || value === null || value === '');
+				var lastSearchValueIsEmpty = (lastSearchValue === undefined || lastSearchValue === null || lastSearchValue === '');
+				var showSearch = (valueIsEmpty && lastSearchValueIsEmpty) ||
+					(lastSearchValue !== value);
+				return showSearch;
 			},
 
 			_dispatchEvent: function() {
@@ -244,15 +269,12 @@ Polymer-based web components for search
 			},
 
 			_handleClearClick: function() {
+				this.value = '';
+				this._setLastSearchValue('');
+				this._dispatchClearEvent();
 				fastdom.mutate(function() {
 					var input = Polymer.dom(this.root).querySelector('input');
-					this.value = '';
-					fastdom.measure(function() {
-						fastdom.mutate(function() {
-							input.focus();
-						});
-					});
-					this._dispatchClearEvent();
+					input.focus();
 				}.bind(this));
 			},
 
@@ -269,8 +291,13 @@ Polymer-based web components for search
 				var value = e.target.value;
 				fastdom.mutate(function() {
 					this.value = value;
+					this._setLastSearchValue(value);
 					this._dispatchEvent();
 				}.bind(this));
+			},
+
+			_handleInput: function(e) {
+				this.value = e.target.value;
 			},
 
 			_handleMouseEnter: function() {
@@ -287,13 +314,14 @@ Polymer-based web components for search
 			},
 
 			_handleSearchClick: function() {
+				var input = Polymer.dom(this.root).querySelector('input');
+				this.value = input.value;
+				this._setLastSearchValue(input.value);
+				this._dispatchEvent();
 				fastdom.mutate(function() {
-					var input = Polymer.dom(this.root).querySelector('input');
-					this.value = input.value;
 					if (this.value.length > 0) {
 						Polymer.dom(this.root).querySelector('.d2l-search-input-clear').focus();
 					}
-					this._dispatchEvent();
 				}.bind(this));
 			},
 
