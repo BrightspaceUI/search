@@ -114,38 +114,61 @@
 
 				describe('events', function() {
 
-					it('should fire "search" event when search is performed', function(done) {
+					it('should fire "search" event when search button is clicked', function(done) {
 						var elem = fixture('basic');
-						elem.addEventListener('d2l-search-input-search', function() {
+						elem.addEventListener('d2l-search-input-search', function(e) {
+							expect(e.detail.value).to.equal('bar');
 							done();
-						});
-						elem.addEventListener('d2l-search-input-clear', function() {
-							throw 'Unexpected clear event';
 						});
 						elem.value = 'bar';
 						clickSearchButton(elem);
 					});
 
-					it('should fire "clear" event when cleared', function(done) {
-						var elem = fixture('value-set');
-						elem.addEventListener('d2l-search-input-search', function() {
-							throw 'Unexpected search event';
+					it('should fire "search" event when ENTER is pressed', function(done) {
+						var elem = fixture('basic');
+						elem.addEventListener('d2l-search-input-search', function(e) {
+							expect(e.detail.value).to.equal('bar');
+							done();
 						});
-						elem.addEventListener('d2l-search-input-clear', function() {
+						elem.value = 'bar';
+						pressEnter(elem);
+					});
+
+					it('should fire "search" event when clear button is pressed', function(done) {
+						var elem = fixture('value-set');
+						elem.addEventListener('d2l-search-input-search', function(e) {
+							expect(e.detail.value).to.equal('');
 							done();
 						});
 						clickClearButton(elem);
 					});
 
-					it('should fire "clear" event empty value search', function(done) {
+					it('should fire "search" event on empty value search', function(done) {
+						var elem = fixture('value-set');
+						elem.addEventListener('d2l-search-input-search', function(e) {
+							expect(e.detail.value).to.equal('');
+							done();
+						});
+						elem.value = '';
+						clickSearchButton(elem);
+					});
+
+					it('should not fire "search" event when ENTER is pressed with no value change', function(done) {
+						var elem = fixture('value-set');
+						elem.addEventListener('d2l-search-input-search', function() {
+							throw 'Unexpected search event';
+						});
+						pressEnter(elem);
+						setTimeout(done, 50);
+					});
+
+					it('should not fire "search" event when search button is pressed on empty value', function(done) {
 						var elem = fixture('basic');
 						elem.addEventListener('d2l-search-input-search', function() {
 							throw 'Unexpected search event';
 						});
-						elem.addEventListener('d2l-search-input-clear', function() {
-							done();
-						});
 						clickSearchButton(elem);
+						setTimeout(done, 50);
 					});
 
 				});
@@ -176,6 +199,11 @@
 
 			function getClearButton(elem) {
 				return Polymer.dom(elem.root).querySelector('.d2l-search-input-clear');
+			}
+
+			function pressEnter(elem) {
+				var input = Polymer.dom(elem.root).querySelector('input');
+				MockInteractions.keyEventOn(input, 'keypress', elem._keyCodes.ENTER);
 			}
 		</script>
 	</body>
