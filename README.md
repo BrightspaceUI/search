@@ -63,15 +63,16 @@ Include the [webcomponents.js](http://webcomponents.org/polyfills/) "lite" polyf
 
 #### Events
 
-The `d2l-search-input` dispatches events for search and clearing the search.
+The `d2l-search-input` dispatches an event when a search is performed:
 
 ```javascript
-// triggered when searching
-search.addEventListener('d2l-search-input-search', () => { ... });
-
-// triggered when search field is cleared
-search.addEventListener('d2l-search-input-clear', () => { ... });
+search.addEventListener('d2l-search-input-search', (e) => {
+    // e.detail.value contains the search value
+    console.log(e.detail.value);
+});
 ```
+
+When the input is cleared, the same event will be fired with an empty value.
 
 ## Developing, Testing and Contributing
 
