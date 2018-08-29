@@ -1,3 +1,5 @@
+> Deprecated: use [BrightspaceUI/inputs](https://github.com/BrightspaceUI/inputs) `d2l-input-search` web component instead.
+
 # d2l-search
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/BrightspaceUI/search)
 [![Bower version][bower-image]][bower-url]
